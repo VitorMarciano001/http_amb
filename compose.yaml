@@ -1,0 +1,45 @@
+
+services:
+  httpd:
+    image: httpd:latest
+    container_name: apache2
+    volumes:
+      - /home/luna-01/Personal/server:/usr/local/apache2/htdocs
+      - ./docker/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    ports:
+      - 8080:80
+    depends_on:
+      - php
+
+
+  php:
+    image: php:8.1-fpm
+    container_name: php
+    volumes:
+      - /home/luna-01/Personal/server:/var/www/html
+    # working_dir: /var/www/html
+    # environment:
+    #   - APACHE_DOCUMENT_ROOT=/var/www/html
+    networks:
+      - webnet
+
+  db:
+    image: mariadb:lts-ubi9
+    restart: always
+    container_name: mariadb
+    ports:
+      - 3306:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: Marciano@001
+    volumes: 
+      - db_vol:/var/lib/mysql
+    networks:
+      - webnet
+
+
+volumes:
+  db_vol:
+
+
+networks:
+  webnet:
